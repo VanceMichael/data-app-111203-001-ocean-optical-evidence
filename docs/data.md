@@ -6,6 +6,8 @@
 
 | 字段 | 类型 | 约束 |
 | --- | --- | --- |
+| `band` | str | 必填，blue 或 green |
+| `detection_limit` | float | 必填，浓度检出限 |
 | `observation_id` | str | 必填 |
 | `station` | str | 必填 |
 | `sensor` | str | 必填 |
@@ -22,3 +24,5 @@
 ## 业务字段语义
 
 plastic 为毫克每立方米，空值表示未配对。detected=0 表示低于检出限，detected=1 表示可检出。反射率为无量纲；chlorophyll 为合成浓度代理，latitude 为度。station 可跨传感器和航次重复。
+
+band 标识波段，每个传感器均包含多个波段；detection_limit 与 plastic 单位相同，是该记录的检出限。
