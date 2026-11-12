@@ -26,3 +26,12 @@
 plastic 为毫克每立方米，空值表示未配对。detected=0 表示低于检出限，detected=1 表示可检出。反射率为无量纲；chlorophyll 为合成浓度代理，latitude 为度。station 可跨传感器和航次重复。
 
 band 标识波段，每个传感器均包含多个波段；detection_limit 与 plastic 单位相同，是该记录的检出限。
+
+## evidence 流程的字段语义
+
+evidence 子流程按观测行、航次、站点三层单位使用上述字段：
+
+- 观测行：`plastic` 为空的行不进入浓度关联，只在样本去向中计为未配对；`detected=0` 的配对行不视为浓度零值，而按 `as_reported`、`half_lod`（detection_limit/2）、`lod`（detection_limit）三种策略做删失替代敏感性对照。
+- 站点（station）：同一站点的多行先在站点内取均值，站点是相关系数与自助区间的独立单元；区间以站点为重采样单元做聚类自助，重复行不独立计数。
+- 航次（cruise）：在站点层面转换为各航次行数份额，以 n-1 个指示列（首个航次为参考）进入偏相关；`day` 与截点比较，仅 `day<=cutoff` 的行进入分析。
+- `chlorophyll` 在站点层面取均值后作为控制变量；`reflectance` 同样按站点取均值后与浓度均值计算斯皮尔曼或偏斯皮尔曼相关。
